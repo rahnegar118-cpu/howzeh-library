@@ -308,41 +308,7 @@ th {
                 </tr>
             </thead>
 
-            <tbody>
-
-                <tr>
-                    <td>کفایة الأصول</td>
-                    <td>آخوند خراسانی</td>
-                    <td>اصول فقه</td>
-                    <td>
-                        <span class="badge">
-                            منتشر شده
-                        </span>
-                    </td>
-                </tr>
-
-                <tr>
-                    <td>فرائد الأصول</td>
-                    <td>شیخ انصاری</td>
-                    <td>اصول فقه</td>
-                    <td>
-                        <span class="badge">
-                            منتشر شده
-                        </span>
-                    </td>
-                </tr>
-
-                <tr>
-                    <td>بدایة الحکمة</td>
-                    <td>علامه طباطبایی</td>
-                    <td>فلسفه</td>
-                    <td>
-                        <span class="badge">
-                            منتشر شده
-                        </span>
-                    </td>
-                </tr>
-
+<tbody id="booksTableBody">
             </tbody>
 
         </table>
@@ -483,6 +449,38 @@ async function saveBook() {
 function closeBookModal() {
     document.getElementById("bookModal").style.display = "none";
 }
+        async function loadBooks() {
+    const { data, error } = await supabaseClient
+        .from("books")
+        .select("*")
+        .order("id", { ascending: false });
+
+    if (error) {
+        console.error("خطا در دریافت کتاب‌ها:", error);
+        return;
+    }
+
+    const tbody = document.getElementById("booksTableBody");
+
+    tbody.innerHTML = "";
+
+    data.forEach(book => {
+        const row = document.createElement("tr");
+
+        row.innerHTML = `
+            <td>${book.title || ""}</td>
+            <td>${book.author || ""}</td>
+            <td>${book.description || ""}</td>
+            <td>
+                <span class="badge">منتشر شده</span>
+            </td>
+        `;
+
+        tbody.appendChild(row);
+    });
+}
+
+loadBooks();
 </script>
     
 </body>
