@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>کتابخانه علمی حوزه</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Tahoma, Arial, sans-serif;
+            background: #f6f4ef;
+            color: #222;
+        }
+
+        header {
+            background: #173f2b;
+            color: white;
+            padding: 20px;
+        }
+
+        .header {
+            max-width: 1100px;
+            margin: auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin-right: 20px;
+            font-size: 14px;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, #173f2b, #286044);
+            color: white;
+            padding: 80px 20px;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 42px;
+            margin-bottom: 20px;
+        }
+
+        .hero p {
+            max-width: 650px;
+            margin: auto;
+            line-height: 2;
+            color: #e4eee8;
+        }
+
+        .search {
+            max-width: 650px;
+            margin: 35px auto 0;
+            display: flex;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .search input {
+            flex: 1;
+            padding: 16px;
+            border: none;
+            outline: none;
+            font-size: 15px;
+            text-align: right;
+        }
+
+        .search button {
+            background: #c49a50;
+            color: white;
+            border: none;
+            padding: 0 25px;
+            cursor: pointer;
+        }
+
+        main {
+            max-width: 1100px;
+            margin: auto;
+            padding: 60px 20px;
+        }
+
+        .title {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .title h2 {
+            color: #173f2b;
+        }
+
+        .categories {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 60px;
+        }
+
+        .category {
+            background: white;
+            padding: 25px;
+            text-align: center;
+            border-radius: 12px;
+            border: 1px solid #ddd;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .category:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px #00000012;
+        }
+
+        .category h3 {
+            margin: 10px 0 5px;
+            color: #173f2b;
+        }
+
+        .category span {
+            font-size: 12px;
+            color: #777;
+        }
+
+        .books {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .book {
+            background: white;
+            border-radius: 14px;
+            overflow: hidden;
+            border: 1px solid #ddd;
+        }
+
+        .book-cover {
+            height: 180px;
+            background: #285b43;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-size: 25px;
+            font-weight: bold;
+        }
+
+        .book-content {
+            padding: 20px;
+        }
+
+        .book-content h3 {
+            margin-top: 0;
+            color: #173f2b;
+        }
+
+        .book-content p {
+            color: #777;
+            font-size: 13px;
+        }
+
+        .book-content a {
+            color: #173f2b;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 13px;
+        }
+
+        footer {
+            background: #173f2b;
+            color: white;
+            text-align: center;
+            padding: 30px;
+            margin-top: 30px;
+        }
+
+        @media (max-width: 800px) {
+            .categories {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .books {
+                grid-template-columns: 1fr;
+            }
+
+            .hero h1 {
+                font-size: 30px;
+            }
+
+            .header {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+
+        @media (max-width: 500px) {
+            .categories {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <div class="header">
+        <div class="logo">
+            📚 کتابخانه علمی حوزه
+        </div>
+
+        <nav>
+            <a href="#">خانه</a>
+            <a href="#books">کتابخانه</a>
+            <a href="#categories">علوم حوزوی</a>
+        </nav>
+    </div>
+</header>
+
+<section class="hero">
+
+    <h1>
+        شرح و جزوه‌های علمی کتب حوزه
+    </h1>
+
+    <p>
+        پایگاه علمی برای مطالعه، شرح، تدریس و دسترسی آسان به
+        کتاب‌ها و جزوه‌های علوم حوزوی
+    </p>
+
+    <div class="search">
+
+        <input
+            type="text"
+            placeholder="نام کتاب، مبحث یا درس را جست‌وجو کنید..."
+        >
+
+        <button>
+            جست‌وجو
+        </button>
+
+    </div>
+
+</section>
+
+<main>
+
+    <div class="title" id="categories">
+
+        <h2>
+            علوم حوزوی
+        </h2>
+
+        <p>
+            مطالب را بر اساس رشته علمی دنبال کنید
+        </p>
+
+    </div>
+
+    <div class="categories">
+
+        <div class="category">
+            <div>📖</div>
+            <h3>فقه</h3>
+            <span>کتب و دروس فقهی</span>
+        </div>
+
+        <div class="category">
+            <div>📚</div>
+            <h3>اصول فقه</h3>
+            <span>شرح و جزوه اصول</span>
+        </div>
+
+        <div class="category">
+            <div>✒️</div>
+            <h3>نحو و صرف</h3>
+            <span>علوم ادبی عربی</span>
+        </div>
+
+        <div class="category">
+            <div>💡</div>
+            <h3>فلسفه</h3>
+            <span>دروس و شرح فلسفی</span>
+        </div>
+
+    </div>
+
+    <div class="title" id="books">
+
+        <h2>
+            کتاب‌های منتخب
+        </h2>
+
+        <p>
+            کتاب‌هایی که در پایگاه برای آن‌ها شرح و جزوه تهیه می‌شود
+        </p>
+
+    </div>
+
+    <div class="books">
+
+        <div class="book">
+
+            <div class="book-cover">
+                کفایة الأصول
+            </div>
+
+            <div class="book-content">
+
+                <h3>
+                    کفایة الأصول
+                </h3>
+
+                <p>
+                    آخوند خراسانی
+                </p>
+
+                <a href="#">
+                    مشاهده شرح ←
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <div class="book">
+
+            <div class="book-cover">
+                فرائد الأصول
+            </div>
+
+            <div class="book-content">
+
+                <h3>
+                    فرائد الأصول
+                </h3>
+
+                <p>
+                    شیخ مرتضی انصاری
+                </p>
+
+                <a href="#">
+                    مشاهده شرح ←
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <div class="book">
+
+            <div class="book-cover">
+                بدایة الحکمة
+            </div>
+
+            <div class="book-content">
+
+                <h3>
+                    بدایة الحکمة
+                </h3>
+
+                <p>
+                    علامه طباطبایی
+                </p>
+
+                <a href="#">
+                    مشاهده شرح ←
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</main>
+
+<footer>
+
+    <p>
+        کتابخانه علمی حوزه
+    </p>
+
+    <small>
+        پایگاه شرح، تدریس و جزوه‌های کتب حوزوی
+    </small>
+
+</footer>
+
+</body>
+</html>
