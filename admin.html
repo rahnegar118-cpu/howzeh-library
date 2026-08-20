@@ -449,12 +449,16 @@ async function saveBook() {
 function closeBookModal() {
     document.getElementById("bookModal").style.display = "none";
 }
-        async function loadBooks() {
+async function loadBooks() {
     const { data, error } = await supabaseClient
         .from("books")
-        .select("*")
+        .select(`
+            *,
+            categories (
+                name
+            )
+        `)
         .order("id", { ascending: false });
-
     if (error) {
         console.error("خطا در دریافت کتاب‌ها:", error);
         return;
@@ -466,15 +470,14 @@ function closeBookModal() {
 
     data.forEach(book => {
         const row = document.createElement("tr");
-
-        row.innerHTML = `
-            <td>${book.title || ""}</td>
-            <td>${book.author || ""}</td>
-            <td>${book.description || ""}</td>
-            <td>
-                <span class="badge">منتشر شده</span>
-            </td>
-        `;
+row.innerHTML = `
+    <td>${book.title || ""}</td>
+    <td>${book.author || ""}</td>
+    <td>${book.categories?.name || "عمومی"}</td>
+    <td>
+        <span class="badge">منتشر شده</span>
+    </td>
+`;
 
         tbody.appendChild(row);
     });
