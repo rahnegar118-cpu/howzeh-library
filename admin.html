@@ -274,18 +274,17 @@ th {
         </h2>
 
         <div class="buttons">
+<button class="button" onclick="addBook()">
+    ➕ افزودن کتاب
+</button>
 
-            <button class="button">
-                ➕ افزودن کتاب
-            </button>
+<button class="button" onclick="addLesson()">
+    ➕ افزودن درس
+</button>
 
-            <button class="button">
-                ➕ افزودن درس
-            </button>
-
-            <button class="button">
-                ➕ افزودن جزوه
-            </button>
+<button class="button" onclick="addNote()">
+    ➕ افزودن جزوه
+</button>
 
         </div>
 
@@ -361,5 +360,80 @@ const supabaseClient = window.supabase.createClient(
     SUPABASE_KEY
 );
 </script>
+    <div id="bookModal" style="
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.55);
+    z-index:9999;
+    padding:30px;
+    overflow:auto;
+">
+
+    <div style="
+        max-width:650px;
+        margin:30px auto;
+        background:white;
+        padding:30px;
+        border-radius:15px;
+    ">
+
+        <h2 style="color:#173f2b;">
+            افزودن کتاب
+        </h2>
+
+        <label>نام کتاب</label>
+        <input id="bookTitle" type="text"
+            style="width:100%;padding:12px;margin:8px 0 15px;">
+
+        <label>نام مؤلف</label>
+        <input id="bookAuthor" type="text"
+            style="width:100%;padding:12px;margin:8px 0 15px;">
+
+        <label>توضیحات</label>
+        <textarea id="bookDescription"
+            style="width:100%;height:120px;padding:12px;margin:8px 0 15px;"></textarea>
+
+        <label>رشته</label>
+        <input id="bookCategory" type="text"
+            placeholder="مثلاً اصول فقه"
+            style="width:100%;padding:12px;margin:8px 0 15px;">
+
+        <button onclick="saveBook()" style="
+            background:#173f2b;
+            color:white;
+            border:none;
+            padding:12px 25px;
+            border-radius:8px;
+            cursor:pointer;
+        ">
+            ذخیره کتاب
+        </button>
+
+        <button onclick="closeBookModal()" style="
+            background:#ddd;
+            color:#222;
+            border:none;
+            padding:12px 25px;
+            border-radius:8px;
+            cursor:pointer;
+            margin-right:10px;
+        ">
+            انصراف
+        </button>
+
+    </div>
+
+</div>
+    <script>
+function addBook() {
+    document.getElementById("bookModal").style.display = "block";
+}
+
+function closeBookModal() {
+    document.getElementById("bookModal").style.display = "none";
+}
+</script>
+    
 </body>
 </html>
