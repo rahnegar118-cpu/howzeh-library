@@ -429,7 +429,56 @@ const supabaseClient = window.supabase.createClient(
 function addBook() {
     document.getElementById("bookModal").style.display = "block";
 }
+async function saveBook() {
+    const title = document.getElementById("bookTitle").value.trim();
+    const author = document.getElementById("bookAuthor").value.trim();
+    const description = document.getElementById("bookDescription").value.trim();
+    const category = document.getElementById("bookCategory").value.trim();
 
+    if (!title) {
+        alert("لطفاً نام کتاب را وارد کنید.");
+        return;
+    }
+
+    const { data: categoryData, error: categoryError } =
+        await supabaseClient
+            .from("categories")
+            .insert({
+                name: category || "عمومی"
+            })
+            .select()
+            .single();
+
+    if (categoryError) {
+        alert("خطا در ایجاد دسته‌بندی: " + categoryError.message);
+        return;
+    }
+
+    const { error } = await supabaseClient
+        .from("books")
+        .insert({
+            title: title,
+            author: author,
+            description: description,
+            category_id: categoryData.id,
+            published: true
+        });
+
+    if (error) {
+        alert("خطا در ذخیره کتاب: " + error.message);
+        return;
+    }
+
+    alert("کتاب با موفقیت ذخیره شد. ✅");
+
+    document.getElementById("bookTitle").value = "";
+    document.getElementById("bookAuthor").value = "";
+    document.getElementById("bookDescription").value = "";
+    document.getElementById("bookCategory").value = "";
+
+    closeBookModal();
+}
+        
 function closeBookModal() {
     document.getElementById("bookModal").style.display = "none";
 }
