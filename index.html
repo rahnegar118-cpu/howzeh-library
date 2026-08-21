@@ -404,6 +404,77 @@
     </small>
 
 </footer>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+<script>
+const SUPABASE_URL = "https://gsuzmbwjoojzblawgwux.supabase.co";
+const SUPABASE_KEY = "sb_publishable_Bj-oXGJ87MDPK6ElWFtE7Q__eHYc95W";
+
+const supabaseClient = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+);
+
+async function loadBooks() {
+
+    const { data, error } = await supabaseClient
+        .from("books")
+        .select(`
+            *,
+            categories (
+                name
+            )
+        `)
+        .eq("published", true)
+        .order("id", { ascending: false });
+
+    if (error) {
+        console.error("خطا در دریافت کتاب‌ها:", error);
+        return;
+    }
+
+    const booksContainer = document.querySelector(".books");
+
+    if (!booksContainer) {
+        return;
+    }
+
+    booksContainer.innerHTML = "";
+
+    data.forEach(book => {
+
+        const bookElement = document.createElement("div");
+
+        bookElement.className = "book";
+
+        bookElement.innerHTML = `
+            <div class="book-cover">
+                ${book.title || "بدون عنوان"}
+            </div>
+
+            <div class="book-content">
+
+                <h3>
+                    ${book.title || ""}
+                </h3>
+
+                <p>
+                    ${book.author || "نام مؤلف ثبت نشده"}
+                </p>
+
+                <a href="#">
+                    مشاهده کتاب ←
+                </a>
+
+            </div>
+        `;
+
+        booksContainer.appendChild(bookElement);
+    });
+}
+
+window.addEventListener("load", loadBooks);
+</script>
 </body>
 </html>
