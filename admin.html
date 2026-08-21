@@ -467,8 +467,7 @@ if (editingBookId) {
     closeBookModal();
 }
         function closeBookModal() {
-    document.getElementById("bookModal").style.display = "none";
-}
+    
 
 async function deleteBook(id) {
     const confirmed = confirm("آیا از حذف این کتاب مطمئن هستید؟");
@@ -546,8 +545,7 @@ row.innerHTML = `
     <button onclick="editBook('${book.id}')">
         ویرایش
     </button>
-</td>
-<td>
+
     <button onclick="deleteBook('${book.id}')">
         حذف
     </button>
