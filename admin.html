@@ -468,6 +468,27 @@ if (editingBookId) {
 }
         
 function closeBookModal() {
+    async function deleteBook(id) {
+    const confirmed = confirm("آیا از حذف این کتاب مطمئن هستید؟");
+
+    if (!confirmed) {
+        return;
+    }
+
+    const { error } = await supabaseClient
+        .from("books")
+        .delete()
+        .eq("id", id);
+
+    if (error) {
+        alert("خطا در حذف کتاب: " + error.message);
+        return;
+    }
+
+    alert("کتاب با موفقیت حذف شد. ✅");
+
+    loadBooks();
+}
     document.getElementById("bookModal").style.display = "none";
 }
         async function editBook(id) {
@@ -522,6 +543,11 @@ row.innerHTML = `
     <td>
     <button onclick="editBook('${book.id}')">
         ویرایش
+    </button>
+</td>
+<td>
+    <button onclick="deleteBook('${book.id}')">
+        حذف
     </button>
 </td>
 `;
