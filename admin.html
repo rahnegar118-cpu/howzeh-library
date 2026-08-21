@@ -393,13 +393,26 @@ const supabaseClient = window.supabase.createClient(
 
 </div>
     <script>
-        let editingBookId = null;
-        
+ <script>
+let editingBookId = null;
+
 function addBook() {
+    editingBookId = null;
+
+    document.getElementById("bookTitle").value = "";
+    document.getElementById("bookAuthor").value = "";
+    document.getElementById("bookDescription").value = "";
+    document.getElementById("bookCategory").value = "";
+
     document.getElementById("bookModal").style.display = "block";
 }
+
+function closeBookModal() {
+    document.getElementById("bookModal").style.display = "none";
+    editingBookId = null;
+}
+
 async function saveBook() {
-    alert("تابع ذخیره کتاب اجرا شد");
     const title = document.getElementById("bookTitle").value.trim();
     const author = document.getElementById("bookAuthor").value.trim();
     const description = document.getElementById("bookDescription").value.trim();
@@ -410,67 +423,123 @@ async function saveBook() {
         return;
     }
 
-    const { data: categoryData, error: categoryError } =
+    // پیدا کردن یا ایجاد دسته‌بندی
+    let categoryId;
+
+    const { data: existingCategory, error: categoryFindError } =
         await supabaseClient
             .from("categories")
-            .insert({
-                name: category || "عمومی"
-            })
-            .select()
-            .single();
+            .select("id")
+            .eq("name", category || "عمومی")
+            .maybeSingle();
 
-    if (categoryError) {
-        alert("خطا در ایجاد دسته‌بندی: " + categoryError.message);
+    if (categoryFindError) {
+        alert("خطا در دریافت دسته‌بندی: " + categoryFindError.message);
         return;
     }
-let error;
 
-if (editingBookId) {
-    const result = await supabaseClient
-        .from("books")
-        .update({
-            title: title,
-            author: author,
-            description: description,
-            category_id: categoryData.id,
-            published: true
-        })
-        .eq("id", editingBookId);
+    if (existingCategory) {
+        categoryId = existingCategory.id;
+    } else {
+        const { data: newCategory, error: categoryError } =
+            await supabaseClient
+                .from("categories")
+                .insert({
+                    name: category || "عمومی"
+                })
+                .select()
+                .single();
 
-    error = result.error;
-} else {
-    const result = await supabaseClient
-        .from("books")
-        .insert({
-            title: title,
-            author: author,
-            description: description,
-            category_id: categoryData.id,
-            published: true
-        });
+        if (categoryError) {
+            alert("خطا در ایجاد دسته‌بندی: " + categoryError.message);
+            return;
+        }
 
-    error = result.error;
-}
+        categoryId = newCategory.id;
+    }
+
+    let error;
+
+    if (editingBookId) {
+
+        const result = await supabaseClient
+            .from("books")
+            .update({
+                title: title,
+                author: author,
+                description: description,
+                category_id: categoryId,
+                published: true
+            })
+            .eq("id", editingBookId);
+
+        error = result.error;
+
+    } else {
+
+        const result = await supabaseClient
+            .from("books")
+            .insert({
+                title: title,
+                author: author,
+                description: description,
+                category_id: categoryId,
+                published: true
+            });
+
+        error = result.error;
+    }
 
     if (error) {
         alert("خطا در ذخیره کتاب: " + error.message);
         return;
     }
 
-    alert("کتاب با موفقیت ذخیره شد. ✅");
-
-    document.getElementById("bookTitle").value = "";
-    document.getElementById("bookAuthor").value = "";
-    document.getElementById("bookDescription").value = "";
-    document.getElementById("bookCategory").value = "";
+    alert(
+        editingBookId
+            ? "کتاب با موفقیت ویرایش شد. ✅"
+            : "کتاب با موفقیت ذخیره شد. ✅"
+    );
 
     closeBookModal();
+
+    loadBooks();
 }
-        function closeBookModal() {
-    
+
+async function editBook(id) {
+
+    editingBookId = id;
+
+    const { data, error } = await supabaseClient
+        .from("books")
+        .select(`
+            *,
+            categories (
+                name
+            )
+        `)
+        .eq("id", id)
+        .single();
+
+    if (error) {
+        alert("خطا در دریافت کتاب: " + error.message);
+        return;
+    }
+
+    document.getElementById("bookTitle").value = data.title || "";
+    document.getElementById("bookAuthor").value = data.author || "";
+    document.getElementById("bookDescription").value = data.description || "";
+    document.getElementById("bookCategory").value =
+        data.categories?.name || "";
+
+    document.getElementById("bookModal").style.display = "block";
+}
 
 async function deleteBook(id) {
-    const confirmed = confirm("آیا از حذف این کتاب مطمئن هستید؟");
+
+    const confirmed = confirm(
+        "آیا از حذف این کتاب مطمئن هستید؟"
+    );
 
     if (!confirmed) {
         return;
@@ -490,30 +559,9 @@ async function deleteBook(id) {
 
     loadBooks();
 }
-    document.getElementById("bookModal").style.display = "none";
-}
-        async function editBook(id) {
-            editingBookId = id;
-    const { data, error } = await supabaseClient
-        .from("books")
-        .select("*")
-        .eq("id", id)
-        .single();
 
-    if (error) {
-        alert("خطا در دریافت کتاب: " + error.message);
-        return;
-    }
-
-    document.getElementById("bookTitle").value = data.title || "";
-    document.getElementById("bookAuthor").value = data.author || "";
-    document.getElementById("bookDescription").value = data.description || "";
-
-    document.getElementById("bookModal").style.display = "block";
-
-    alert("اطلاعات کتاب برای ویرایش آماده شد.");
-}
 async function loadBooks() {
+
     const { data, error } = await supabaseClient
         .from("books")
         .select(`
@@ -522,35 +570,55 @@ async function loadBooks() {
                 name
             )
         `)
-        .order("id", { ascending: false });
+        .order("id", {
+            ascending: false
+        });
+
     if (error) {
-        console.error("خطا در دریافت کتاب‌ها:", error);
+        console.error(
+            "خطا در دریافت کتاب‌ها:",
+            error
+        );
         return;
     }
 
-    const tbody = document.getElementById("booksTableBody");
+    const tbody =
+        document.getElementById("booksTableBody");
 
     tbody.innerHTML = "";
 
     data.forEach(book => {
-        const row = document.createElement("tr");
-row.innerHTML = `
-    <td>${book.title || ""}</td>
-    <td>${book.author || ""}</td>
-    <td>${book.categories?.name || "عمومی"}</td>
-    <td>
-        <span class="badge">منتشر شده</span>
-    </td>
-    <td>
-    <button onclick="editBook('${book.id}')">
-        ویرایش
-    </button>
 
-    <button onclick="deleteBook('${book.id}')">
-        حذف
-    </button>
-</td>
-`;
+        const row =
+            document.createElement("tr");
+
+        row.innerHTML = `
+            <td>${book.title || ""}</td>
+
+            <td>${book.author || ""}</td>
+
+            <td>
+                ${book.categories?.name || "عمومی"}
+            </td>
+
+            <td>
+                <span class="badge">
+                    منتشر شده
+                </span>
+            </td>
+
+            <td>
+                <button
+                    onclick="editBook('${book.id}')">
+                    ویرایش
+                </button>
+
+                <button
+                    onclick="deleteBook('${book.id}')">
+                    حذف
+                </button>
+            </td>
+        `;
 
         tbody.appendChild(row);
     });
@@ -559,7 +627,7 @@ row.innerHTML = `
 window.addEventListener("load", function () {
     loadBooks();
 });
-        
+</script>       
 </script>
     
 </body>
