@@ -239,6 +239,44 @@ async function loadBook() {
 
     loadVolumes();
 }
+    async function loadVolumes() {
+
+    const { data: volumes, error } = await supabaseClient
+        .from("volumes")
+        .select("*")
+        .eq("book_id", bookId)
+        .order("volume_number");
+
+    const container = document.getElementById("bookStructure");
+
+    if (error) {
+        console.error("خطا در دریافت جلدها:", error);
+        container.innerHTML = "خطا در دریافت ساختار کتاب.";
+        return;
+    }
+
+    container.innerHTML = "";
+
+    if (!volumes || volumes.length === 0) {
+        container.innerHTML = "هنوز جلدی برای این کتاب ثبت نشده است.";
+        return;
+    }
+
+    for (const volume of volumes) {
+
+        const volumeElement = document.createElement("div");
+
+        volumeElement.className = "volume";
+
+        volumeElement.innerHTML = `
+            📖 ${volume.title || "جلد " + volume.volume_number}
+        `;
+
+        container.appendChild(volumeElement);
+
+        await loadStages(volume.id, container);
+    }
+}
 async function loadStages(volumeId, container) {
 
     const { data: stages, error } = await supabaseClient
