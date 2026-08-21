@@ -306,33 +306,6 @@ async function loadStages(volumeId, container) {
     }
 }
 
-async function loadStages(volumeId, container) {
-
-    const { data: stages, error } = await supabaseClient
-        .from("stages")
-        .select("*")
-        .eq("volume_id", volumeId)
-        .order("stage_number");
-
-    if (error) {
-        console.error(error);
-        return;
-    }
-
-    for (const stage of stages || []) {
-
-        const stageElement =
-            document.createElement("div");
-
-        stageElement.className = "stage";
-
-        stageElement.innerHTML = `
-            📚 ${stage.title}
-        `;
-
-        container.appendChild(stageElement);
-
-        loadChapters(stage.id, container);
     }
 }
 
