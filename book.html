@@ -342,6 +342,7 @@ async function loadStages(volumeId, container) {
 
         loadLessons(chapter.id, container);
 }
+    }
 async function loadChapters(stageId, container) {
 
     const { data: chapters, error } = await supabaseClient
