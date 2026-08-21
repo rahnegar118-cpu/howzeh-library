@@ -305,6 +305,7 @@ th {
                     <th>مؤلف</th>
                     <th>رشته</th>
                     <th>وضعیت</th>
+                    <th>مدییریت</th>
                 </tr>
             </thead>
 
@@ -392,6 +393,8 @@ const supabaseClient = window.supabase.createClient(
 
 </div>
     <script>
+        let editingBookId = null;
+        
 function addBook() {
     document.getElementById("bookModal").style.display = "block";
 }
@@ -420,8 +423,23 @@ async function saveBook() {
         alert("خطا در ایجاد دسته‌بندی: " + categoryError.message);
         return;
     }
+let error;
 
-    const { error } = await supabaseClient
+if (editingBookId) {
+    const result = await supabaseClient
+        .from("books")
+        .update({
+            title: title,
+            author: author,
+            description: description,
+            category_id: categoryData.id,
+            published: true
+        })
+        .eq("id", editingBookId);
+
+    error = result.error;
+} else {
+    const result = await supabaseClient
         .from("books")
         .insert({
             title: title,
@@ -430,6 +448,9 @@ async function saveBook() {
             category_id: categoryData.id,
             published: true
         });
+
+    error = result.error;
+}
 
     if (error) {
         alert("خطا در ذخیره کتاب: " + error.message);
@@ -448,6 +469,27 @@ async function saveBook() {
         
 function closeBookModal() {
     document.getElementById("bookModal").style.display = "none";
+}
+        async function editBook(id) {
+            editingBookId = id;
+    const { data, error } = await supabaseClient
+        .from("books")
+        .select("*")
+        .eq("id", id)
+        .single();
+
+    if (error) {
+        alert("خطا در دریافت کتاب: " + error.message);
+        return;
+    }
+
+    document.getElementById("bookTitle").value = data.title || "";
+    document.getElementById("bookAuthor").value = data.author || "";
+    document.getElementById("bookDescription").value = data.description || "";
+
+    document.getElementById("bookModal").style.display = "block";
+
+    alert("اطلاعات کتاب برای ویرایش آماده شد.");
 }
 async function loadBooks() {
     const { data, error } = await supabaseClient
@@ -477,6 +519,11 @@ row.innerHTML = `
     <td>
         <span class="badge">منتشر شده</span>
     </td>
+    <td>
+    <button onclick="editBook('${book.id}')">
+        ویرایش
+    </button>
+</td>
 `;
 
         tbody.appendChild(row);
